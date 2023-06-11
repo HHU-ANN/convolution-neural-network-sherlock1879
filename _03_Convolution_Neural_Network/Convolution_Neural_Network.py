@@ -8,31 +8,18 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 from torch.utils.data import DataLoader
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+import torchvision.models as models
 
 
-class ResNet(nn.Module):
+class NeuralNetwork(nn.Module):
     def __init__(self):
-        super(ResNet, self).__init__()
-        self.resnet = torchvision.models.resnet18(pretrained=False)
-        num_ftrs = self.resnet.fc.in_features
-        self.resnet.fc = nn.Linear(num_ftrs, 10)
-        self.layer_norm = nn.LayerNorm(num_ftrs)  # 添加层归一化层
+        super(NeuralNetwork, self).__init__()
+        self.model = models.resnet18(pretrained=True)
+        # 可根据需要修改ResNet-18的最后一层或其他层
 
     def forward(self, x):
-        x = self.resnet.conv1(x)
-        x = self.resnet.bn1(x)
-        x = self.resnet.relu(x)
-        x = self.resnet.maxpool(x)
-        x = self.resnet.layer1(x)
-        x = self.resnet.layer2(x)
-        x = self.resnet.layer3(x)
-        x = self.resnet.layer4(x)
-        x = self.resnet.avgpool(x)
-        x = torch.flatten(x, 1)
-        x = self.layer_norm(x)  # 应用层归一化
-        x = self.resnet.fc(x)
-        return x
+        return self.model(x)
+
 
 
 
@@ -49,9 +36,9 @@ def read_data():
 
 
 def main():
-    model = ResNet()
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(current_dir)
-    model.load_state_dict(torch.load(parent_dir + '/pth/model.pth',map_location='cpu'))
+    model = NeuralNetwork()
+    #current_dir = os.path.dirname(os.path.abspath(__file__))
+    #parent_dir = os.path.dirname(current_dir)
+    #model.load_state_dict(torch.load(parent_dir + '/pth/model.pth',map_location='cpu'))
     return model
 
