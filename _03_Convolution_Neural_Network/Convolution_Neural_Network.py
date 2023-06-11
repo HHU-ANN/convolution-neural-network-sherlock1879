@@ -11,9 +11,9 @@ from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
-class ResNet(nn.Module):
+class NeuralNetwork(nn.Module):
     def __init__(self):
-        super(ResNet, self).__init__()
+        super(NeuralNetwork, self).__init__()
         self.resnet = torchvision.models.resnet18(pretrained=False)
         num_ftrs = self.resnet.fc.in_features
         self.resnet.fc = nn.Linear(num_ftrs, 10)
