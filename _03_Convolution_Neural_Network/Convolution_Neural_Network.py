@@ -11,17 +11,28 @@ from torch.utils.data import DataLoader
 import torchvision.models as models
 
 
-class NeuralNetwork(nn.Module):
+class ResNet(nn.Module):
     def __init__(self):
-        super(NeuralNetwork, self).__init__()
-        self.model = models.resnet18(pretrained=True)
-        # 可根据需要修改ResNet-18的最后一层或其他层
+        super(ResNet, self).__init__()
+        self.resnet = torchvision.models.resnet34(pretrained=False)
+        num_ftrs = self.resnet.fc.in_features
+        self.resnet.fc = nn.Linear(num_ftrs, 10)
+        self.layer_norm = nn.LayerNorm(num_ftrs)  # 添加层归一化层
 
     def forward(self, x):
-        return self.model(x)
-
-
-
+        x = self.resnet.conv1(x)
+        x = self.resnet.bn1(x)
+        x = self.resnet.relu(x)
+        x = self.resnet.maxpool(x)
+        x = self.resnet.layer1(x)
+        x = self.resnet.layer2(x)
+        x = self.resnet.layer3(x)
+        x = self.resnet.layer4(x)
+        x = self.resnet.avgpool(x)
+        x = torch.flatten(x, 1)
+        x = self.layer_norm(x)  # 应用层归一化
+        x = self.resnet.fc(x)
+        return x
 
 def read_data():
     dataset_train = torchvision.datasets.CIFAR10(
@@ -36,9 +47,9 @@ def read_data():
 
 
 def main():
-    model = NeuralNetwork()
-    #current_dir = os.path.dirname(os.path.abspath(__file__))
-    #parent_dir = os.path.dirname(current_dir)
-    #model.load_state_dict(torch.load(parent_dir + '/pth/model.pth',map_location='cpu'))
+    model = ResNet()
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    model.load_state_dict(torch.load(parent_dir + '/pth/model.pth',map_location='cpu'))
     return model
 
