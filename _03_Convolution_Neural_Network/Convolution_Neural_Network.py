@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
-class ResNet(nn.Module):
+class NeuralNetwork(nn.Module):
     def __init__(self):
         super(ResNet, self).__init__()
         self.resnet = torchvision.models.resnet18(pretrained=False)
@@ -35,7 +35,7 @@ def read_data():
 
 
 def main():
-    model = ResNet()
+    model = NeuralNetwork()
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
     model.load_state_dict(torch.load(parent_dir + '/pth/model.pth'))
