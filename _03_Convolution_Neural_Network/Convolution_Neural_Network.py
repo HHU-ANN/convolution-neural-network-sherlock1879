@@ -11,28 +11,16 @@ from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
-class NeuralNetwork(nn.Module):
+class ResNet(nn.Module):
     def __init__(self):
-        super(NeuralNetwork, self).__init__()
+        super(ResNet, self).__init__()
         self.resnet = torchvision.models.resnet18(pretrained=False)
         num_ftrs = self.resnet.fc.in_features
         self.resnet.fc = nn.Linear(num_ftrs, 10)
-        self.layer_norm = nn.LayerNorm(num_ftrs)  # 添加层归一化层
 
     def forward(self, x):
-        x = self.resnet.conv1(x)
-        x = self.resnet.bn1(x)
-        x = self.resnet.relu(x)
-        x = self.resnet.maxpool(x)
-        x = self.resnet.layer1(x)
-        x = self.resnet.layer2(x)
-        x = self.resnet.layer3(x)
-        x = self.resnet.layer4(x)
-        x = self.resnet.avgpool(x)
-        x = torch.flatten(x, 1)
-        x = self.layer_norm(x)  # 应用层归一化
-        x = self.resnet.fc(x)
-        return x
+        return self.resnet(x)
+
 
 
 def read_data():
