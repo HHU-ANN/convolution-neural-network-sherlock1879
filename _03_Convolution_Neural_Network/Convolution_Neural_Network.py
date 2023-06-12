@@ -39,7 +39,7 @@ class ResidualBlock(torch.nn.Module):
         out = self.relu(out)
         return out
 
-
+num_classes=10
 # Define ResNet-18
 class ResNet(torch.nn.Module):
     def __init__(self, block, layers, num_classes):
